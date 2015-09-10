@@ -14,12 +14,24 @@ shift
 adam_dir="$1"
 shift
 
-if [ "$sha" == "0.17.0" ]; then
+function contains() {
+    local n=$#
+    local value=${!n}
+    for ((i=1;i < $#;i++)) {
+        if [ "${!i}" == "${value}" ]; then
+            return 0
+        fi
+    }
+    return 1
+}
+
+adam_versions=("0.17.0" "0.17.1")
+if contains "${adam_versions[@]}" "$sha"; then
   if [ ! -d "$adam_dir" ]; then
     new_base="adam-${sha}-${scala_version}"
     original_base="adam-distribution_${scala_version}-${sha}"
     tar_gz="${original_base}-bin.tar.gz"
-    tar_url="https://repo1.maven.org/maven2/org/bdgenomics/adam/adam-distribution_${scala_version}/0.17.0/${tar_gz}"
+    tar_url="https://repo1.maven.org/maven2/org/bdgenomics/adam/adam-distribution_${scala_version}/${sha}/${tar_gz}"
     pushd "${ADAM_HELPERS_DIR}"
     if [ ! -s "$tar_gz" ]; then
       wget "$tar_url"
