@@ -41,7 +41,7 @@ if contains "${adam_versions[@]}" "$sha"; then
   fi
 else
   if [ ! -d "$adam_dir" ]; then
-    git clone "${ADAM_REPO_URL:-git@github.com:bigdatagenomics/adam.git}" "$adam_dir"
+    git clone "${ADAM_REPO_URL:-https://github.com/bigdatagenomics/adam.git}" "$adam_dir"
     pushd "$adam_dir"
     if ! git checkout "$sha"; then
       popd
