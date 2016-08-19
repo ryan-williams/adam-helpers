@@ -27,7 +27,9 @@ function contains() {
 
 adam_versions=("0.17.0" "0.17.1" "0.18.0" "0.18.1" "0.18.2" "0.19.0")
 if contains "${adam_versions[@]}" "$sha"; then
+  echo "Detected ADAM version: $sha"
   if [ ! -d "$adam_dir" ]; then
+    echo "Not found; downloading…"
     new_base="adam-${sha}-${scala_version}"
     original_base="adam-distribution_${scala_version}-${sha}"
     tar_gz="${original_base}-bin.tar.gz"
@@ -40,10 +42,13 @@ if contains "${adam_versions[@]}" "$sha"; then
     mv "$original_base" "$new_base"
   fi
 else
+  echo "Detected git SHA: $sha"
   if [ ! -d "$adam_dir" ]; then
+    echo "$adam_dir not found; cloning…"
     git clone "${ADAM_REPO_URL:-https://github.com/bigdatagenomics/adam.git}" "$adam_dir"
     pushd "$adam_dir"
     if ! git checkout "$sha"; then
+      echo "Checking out $sha failed; rm'ing and exiting."
       popd
       rm -rf "$adam_dir"
       exit 1
@@ -52,8 +57,8 @@ else
     pushd "$adam_dir"
   fi
 
-  if ! "$adam_dir"/bin/compute-adam-classpath.sh &> /dev/null; then
-    echo "Building.."
+  if ! compgen -G "$adam_dir"/adam-assembly/target/*.jar &> /dev/null; then
+    echo "Assembly JAR not detected; building…"
     mvn package -DskipTests
   fi
 fi

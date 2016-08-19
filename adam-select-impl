@@ -16,7 +16,7 @@ shift
 scala_version="${1:-$ADAM_SCALA_VERSION}"
 scala_version="${scala_version:-2.10}"
 
-adam_dir="$ADAM_HELPERS_DIR"/adam-"$sha"-${scala_version}
+adam_dir="$ADAM_HELPERS_DIR"/adam-"$sha"-"$scala_version"
 
 if ! adam-build "$sha" "$scala_version" "$adam_dir"; then
   return 1
